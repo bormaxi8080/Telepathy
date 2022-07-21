@@ -4,6 +4,7 @@ details.py
 venv
 data/archives*
 data/memberlists*
+data/edgelists*
 *.session
 *.session-journal
 __pycache__
