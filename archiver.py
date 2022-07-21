@@ -1,37 +1,38 @@
-#Imports
 from telethon.sync import TelegramClient
 from telethon.tl.functions.messages import GetDialogsRequest
 from telethon.tl.types import InputPeerEmpty
 from telethon.utils import get_display_name
 import pandas as pd
 import details as ds
-import csv
 import os
 
-#Login details
+
+# Login details
 api_id = ds.apiID
 api_hash = ds.apiHash
 phone = ds.number
 client = TelegramClient(phone, api_id, api_hash)
 
-#Check authorisation
+
+# Check authorization
 client.connect()
 if not client.is_user_authorized():
     client.send_code_request(phone)
     client.sign_in(phone, input('Enter the code: '))
 
+
 chats = []
 last_date = None
 chunk_size = 200
-groups=[]
+groups = []
 
 result = client(GetDialogsRequest(
-             offset_date=last_date,
-             offset_id=0,
-             offset_peer=InputPeerEmpty(),
-             limit=chunk_size,
-             hash = 0
-         ))
+    offset_date=last_date,
+    offset_id=0,
+    offset_peer=InputPeerEmpty(),
+    limit=chunk_size,
+    hash=0
+))
 chats.extend(result.chats)
 
 for chat in chats:
@@ -39,24 +40,29 @@ for chat in chats:
 
 print('Archiving chats...')
 
-#to_archive.csv to be replaced with your list of channels, must have "To" as a column header#
+
+# to_archive.csv to be replaced with your list of channels, must have "To" as a column header #
 
 async def main():
     df = pd.read_csv('to_archive.csv')
     df = df.To.unique()
 
     for i in df:
-        print("Working on ", i," This may take a while...")
-        l = []
+        print("Working on ", i, " This may take a while...")
+        lines = []
         try:
-            async for message in client.iter_messages(i):
-                i_clean = i
-                alphanumeric = ""
+            i_clean = i
+            alphanumeric = ""
 
-                for character in i_clean:
-                    if character.isalnum():
-                        alphanumeric += character
-                directory = './' + alphanumeric
+            for character in i_clean:
+                if character.isalnum():
+                    alphanumeric += character
+            directory = './data/archives/' + alphanumeric
+
+            file = directory + '/' + alphanumeric + '_archive.csv'
+            file_json = directory + '/' + alphanumeric + '_archive.json'
+
+            async for message in client.iter_messages(i):
                 try:
                     os.makedirs(directory)
                 except FileExistsError:
@@ -67,9 +73,8 @@ async def main():
                 except FileExistsError:
                     pass
 
-                df = pd.DataFrame(l, columns = ['Chat name','message ID','Name','ID','Message text','Message date and time (YYYY/MM/DD, HH:MM)'])
-
-                file = directory + '/'+ alphanumeric + '_archive.csv'
+                df = pd.DataFrame(lines, columns=['Chat name', 'message ID', 'Name', 'ID', 'Message text',
+                                                  'Message date and time (YYYY/MM/DD, HH:MM)'])
 
                 with open(file, 'w+') as f:
                     df.to_csv(f, header=False)
@@ -79,21 +84,21 @@ async def main():
                 date = str(message.date.year) + "/" + str(message.date.month) + "/" + str(message.date.day)
                 time = str(message.date.hour) + ":" + str(message.date.minute)
                 timestamp = date + ", " + time
-                #print(message.id,' ',name,':',message.text)
-                l.append([i,message.id,name,nameID,message.text,timestamp])
+                # print(message.id,' ', name,':', message.text)
+                lines.append([i, message.id, name, nameID, message.text, timestamp])
 
                 if message.media:
-                    path = await message.download_media(file=media_directory)
-                    #print('File saved to', path)
+                    await message.download_media(file=media_directory)
 
-            df.to_json(directory + alphanumeric + '_archive.json', orient = 'split', compression = 'infer', index = 'true')
+            df.to_json(file_json, orient='split', compression='infer', index=True)
 
-            print("Scrape completed for", i,", file saved")
+            print("Scrape completed for", i, ", file saved")
 
             df = pd.DataFrame(None)
 
         except Exception as e:
             print("An exception occurred.", e)
+
 
 with client:
     client.loop.run_until_complete(main())

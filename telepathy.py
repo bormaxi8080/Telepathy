@@ -1,26 +1,29 @@
-from telethon.sync import TelegramClient
-from telethon import TelegramClient
+# from telethon.sync import TelegramClient
+# from telethon import TelegramClient
 
 print('Welcome to Telepathy')
 print('Please select a function:')
 
-li = ['Batch chat archiver','Scrape group members','Scrape forwarded messages in a chat']
+li = ['Batch chat archiver', 'Scrape group members', 'Scrape forwarded messages in a chat']
 
-def display(li):
-    for idx, tables in enumerate(li):
+
+def display(line):
+    for idx, tables in enumerate(line):
         print("%s. %s" % (idx+1, tables))
 
-def get_list(li):
+
+def get_list(line):
     choose = int(input("\nPick a number:"))-1
-    if choose < 0 or choose > (len(li)-1):
+    if choose < 0 or choose > (len(line) - 1):
         print('Invalid Choice')
         return ''
-    return li[choose]
+    return line[choose]
+
 
 display(li)
 choice = (get_list(li))
 
-print('Loading', choice,'...')
+print('Loading', choice, '...')
 
 if choice == 'Batch chat archiver':
     print('Launching batch chat archiver')

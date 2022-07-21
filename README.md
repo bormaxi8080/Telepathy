@@ -1,6 +1,6 @@
 # Telepathy
 
-Welcome to Telepathy, an OSINT toolkit for scraping Telegram data to help investigate shady goings on.
+Welcome to Telepathy, an OSINT toolkit for scraping Telegram data to help investigate shady going on.
 
 ## Installation
 
@@ -22,7 +22,7 @@ python3 setup.py
 
 ## Usage
 
-Upon installation completion, you will be able to launch telepathy.py. On first use of any of the modules, Telepathy will ask you for an authorization code that will be sent to your Telegram account.
+Upon installation completion, you will be able to launch telepathy.py. On first use any of the modules, Telepathy will ask you for an authorization code that will be sent to your Telegram account.
 
 _telepathy.py_
 

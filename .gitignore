@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+details.py
+venv
+data/archives*
+data/memberlists*
+*.session
+*.session-journal
+__pycache__
+to_archive.csv

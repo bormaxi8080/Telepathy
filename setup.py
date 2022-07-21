@@ -1,4 +1,6 @@
-print('Welcome to the Telepathy setup.\nThis file wil save your Telegram login information to allow API access.\nFollow the README instructions to get your credentials.')
+print(
+    'Welcome to the Telepathy setup.\nThis file wil save your Telegram login information to allow API access.\nFollow '
+    'the README instructions to get your credentials.')
 
 fin1 = open("detailsshell.py", "rt")
 fout1 = open("details.py", "wt")
@@ -11,9 +13,9 @@ while True:
         if a1 == 'y':
             print('Updating...')
             new_text1 = a
-            break;
-    except:
-            continue
+            break
+    except():
+        continue
 
 while True:
     try:
@@ -23,9 +25,9 @@ while True:
         if a2 == 'y':
             print('Updating...')
             new_text2 = "'" + h + "'"
-            break;
-    except:
-            continue
+            break
+    except():
+        continue
 
 while True:
     try:
@@ -35,12 +37,12 @@ while True:
         if a3 == 'y':
             print('Updating...')
             new_text3 = "'" + n + "'"
-            break;
-    except:
-            continue
+            break
+    except():
+        continue
 
-checkWords = ("old_text1","old_text2","old_text3")
-repWords = (new_text1,new_text2,new_text3)
+checkWords = ("old_text1", "old_text2", "old_text3")
+repWords = (new_text1, new_text2, new_text3)
 
 for line in fin1:
     for check, rep in zip(checkWords, repWords):
