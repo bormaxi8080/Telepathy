@@ -33,6 +33,7 @@ chats.extend(result.chats)
 
 for chat in chats:
     try:
+        # NOTE: If you want to scrape channel users, uncomment the following line
         if chat.megagroup:
             groups.append(chat)
     except:
