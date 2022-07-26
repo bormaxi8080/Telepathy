@@ -14,19 +14,25 @@ if not client.is_user_authorized():
     client.send_code_request(phone)
     client.sign_in(phone, input('Enter the code: '))
 
-print('Welcome to channel forward scraper.\nThis tool will scrape a Telegram channel for all forwarded messages and '
+
+def inputChannelName():
+    while True:
+        try:
+            channelName = input("Please enter a Telegram channel name:\n")
+            print(f'You entered "{channelName}"')
+            answer = input('Is this correct? (y/n)')
+            if answer == 'y':
+                print('Scraping forwards from', channelName, 'This may take a while...')
+                return channelName
+        except():
+            continue
+
+
+print('Welcome to channel forward scraper.\n'
+      'This tool will scrape a Telegram channel for all forwarded messages and '
       'their original sources.')
 
-while True:
-    try:
-        channel_name = input("Please enter a Telegram channel name:\n")
-        print(f'You entered "{channel_name}"')
-        answer = input('Is this correct? (y/n)')
-        if answer == 'y':
-            print('Scraping forwards from', channel_name, 'This may take a while...')
-            break
-    except():
-        continue
+channel_name = inputChannelName()
 
 
 async def main():
@@ -77,6 +83,7 @@ print('Forwards scraped successfully.')
 
 next1 = input('Do you also want to scrape forwards from the discovered channels? (y/n)')
 if next1 == 'y':
+    # channel_name = inputChannelName()
     print('Scraping forwards from channels discovered in', channel_name, '...')
 
 
@@ -87,7 +94,7 @@ if next1 == 'y':
         for character in name_clean:
             if character.isalnum():
                 alphanumeric += character
-        df = pd.read_csv('./edgelists/' + alphanumeric + '_edgelist.csv')
+        df = pd.read_csv('./data/edgelists/' + alphanumeric + '_edgelist.csv')
         df = df.From.unique()
         lines = []
 
@@ -124,11 +131,12 @@ if next1 == 'y':
 
                             lines.append([i, ent.title, date, time])
                     except():
-                        # print("An exception occurred: Could be private, now deleted, or a group.")
+                        print("An exception occurred: Could be private, now deleted, or a group.")
                         pass
 
             print("Scrape complete for:", i, )
-        df.to_json(alphanumeric + '_archive.json', orient='split', compression='infer', index=True)
+        df.to_json('./data/edgelists/' + alphanumeric + '_archive.json',
+                   orient='split', compression='infer', index=True)
 
 
     with client:
